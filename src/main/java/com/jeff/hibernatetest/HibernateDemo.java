@@ -1,6 +1,7 @@
 package com.jeff.hibernatetest;
 
 import com.jeff.entity.User;
+import com.jeff.utils.HibernateUtils;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -45,4 +46,180 @@ public class HibernateDemo {
         session.close();
         sessionFactory.close();
     }
+
+    @Test
+    public void testGet() {
+        // 1.調用工具類得到sessionFactory
+        SessionFactory sessionFactory = HibernateUtils.getSessionFactory();
+        // 2.獲取session
+        Session session = sessionFactory.openSession();
+        // 3.開啟事務
+        Transaction tx = session.beginTransaction();
+        // 4.根據id查詢
+        // 調用session裡面的get方法
+        // 第一個參數，實體類的class
+        // 第二個參數，id值
+        User user = session.get(User.class, 1);
+        System.out.println(user);
+
+        // 5.提交事務
+        tx.commit();
+        // 6.關閉
+        session.close();
+        sessionFactory.close();
+    }
+
+    @Test
+    public void testUpdate() {
+        // 1.調用工具類得到sessionFactory
+        SessionFactory sessionFactory = HibernateUtils.getSessionFactory();
+        // 2.獲取session
+        Session session = sessionFactory.openSession();
+        // 3.開啟事務
+        Transaction tx = session.beginTransaction();
+        // 4.修改操作
+        // 修改uid = 1 紀錄的username值
+        // 根據id查詢
+        User user = session.get(User.class, 1);
+        user.setUsername("jeff123");
+        // 調用session的方法update修改
+        // 執行過程，到user對象裡查找到uid值，根據uid進行修改
+        session.update(user);
+
+        // 5.提交事務
+        tx.commit();
+        // 6.關閉
+        session.close();
+        sessionFactory.close();
+    }
+
+    @Test
+    public void testDelete() {
+        // 1.調用工具類得到sessionFactory
+        SessionFactory sessionFactory = HibernateUtils.getSessionFactory();
+        // 2.獲取session
+        Session session = sessionFactory.openSession();
+        // 3.開啟事務
+        Transaction tx = session.beginTransaction();
+        // 4.刪除操作
+        // 第一種根據id查詢對象
+        User user = session.get(User.class, 1);
+        session.delete(user);
+
+        // 第二種
+//        User user = new User();
+//        user.setUid(1);
+//        session.delete(user);
+
+        // 5.提交事務
+        tx.commit();
+        // 6.關閉
+        session.close();
+        sessionFactory.close();
+    }
+
+    @Test
+    public void testSaveOrUpdate() {
+        // 1.調用工具類得到sessionFactory
+        SessionFactory sessionFactory = HibernateUtils.getSessionFactory();
+        // 2.獲取session
+        Session session = sessionFactory.openSession();
+        // 3.開啟事務
+        Transaction tx = session.beginTransaction();
+        // 4.
+
+//        瞬時態
+//        User user = new User();
+//        user.setUid(1);
+//        user.setUsername("jeff");
+//        user.setPassword("124");
+//        user.setAddress("tw");
+
+//        託管態
+//        User user = new User();
+//        user.setUid(1);
+//        user.setUsername("jeff");
+//        user.setPassword("124");
+//        user.setAddress("tw");
+
+        // 持久態
+        User user = session.get(User.class, 1);
+        user.setUsername("jeff1234");
+
+        // 實體類對象實體類對象是瞬時態，做添加
+        // 實體類對象實體類對象是託管態，做修改
+        // 實體類對象實體類對象是持久態，做修改
+        session.saveOrUpdate(user);
+
+
+        // 5.提交事務
+        tx.commit();
+        // 6.關閉
+        session.close();
+        sessionFactory.close();
+    }
+
+    // 事務規範代碼
+    @Test
+    public void testTx() {
+        SessionFactory sessionFactory = null;
+        Session session = null;
+        Transaction tx = null;
+
+        try {
+            sessionFactory = HibernateUtils.getSessionFactory();
+            session = sessionFactory.openSession();
+            // 開啟事務
+            tx = session.beginTransaction();
+
+            // 添加
+            User user = new User();
+            user.setUsername("jeff");
+            user.setPassword("123");
+            user.setAddress("tw");
+            session.save(user);
+
+            // 提交事務
+            tx.commit();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            // 回滾事務
+            tx.rollback();
+        } finally {
+            // 關閉操作
+            session.close();
+            sessionFactory.close();
+        }
+    }
+
+    @Test
+    public void testTx2() {
+        Session session = null;
+        Transaction tx = null;
+
+        try {
+            // 與本地線程綁定的session
+            session = HibernateUtils.getSessionObject();
+            // 開啟事務
+            tx = session.beginTransaction();
+
+            // 添加
+            User user = new User();
+            user.setUsername("jeff");
+            user.setPassword("123");
+            user.setAddress("tw");
+            session.save(user);
+
+            // 提交事務
+            tx.commit();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            // 回滾事務
+            tx.rollback();
+        } finally {
+            // 獲取與本地線程綁定session，不需要手動關閉線程
+//            session.close() ;
+        }
+    }
+
 }

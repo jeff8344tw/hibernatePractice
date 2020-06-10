@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--引入約束-->
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EM"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+    <class name="com.jeff.entity.LinkMan" table="t_linkman">
+        <id name="lkn_id" column="lkn_id">
+            <generator class="native"></generator>
+        </id>
+        <property name="lkn_name" column="lkn_name" />
+        <property name="lkn_gender" column="lkn_gender" />
+        <property name="lkn_phone" column="lkn_phone" />
+    </class>
+</hibernate-mapping>
