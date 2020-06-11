@@ -31,6 +31,10 @@
 
         <!--第三部分: 把映射文件放到核心配置文件中-->
         <mapping resource="User.hbm.xml" />
+        <mapping resource="Customer.hbm.xml" />
+        <mapping resource="LinkMan.hbm.xml" />
+        <mapping resource="UsertoMany.hbm.xml" />
+        <mapping resource="Role.hbm.xml" />
 
     </session-factory>
 </hibernate-configuration>

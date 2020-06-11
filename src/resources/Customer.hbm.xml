@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--引入約束-->
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EM"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+    <class name="com.jeff.entity.Customer" table="t_customer">
+        <id name="cid" column="cid">
+            <generator class="native"></generator>
+        </id>
+        <property name="custName" column="cust_name" />
+        <property name="custLevel" column="cust_level" />
+        <property name="custSource" column="cust_source" />
+        <property name="custPhone" column="cust_phone" />
+        <property name="custMobile" column="cust_mobile" />
+
+        <!-- 在客戶映射文件中，表示所有聯繫人
+            使用set標籤表示所有聯繫人
+            set標籤裡面有name屬性，屬性值填寫在客戶實體類裡表示聯繫人的set集合名稱
+
+            inverse屬性默認值為false，false不放棄關係維護
+                                    true表示放棄關係維護
+        -->
+        <set name="setLinkMan" cascade="save-update,delete" inverse="true">
+            <!-- 一對多建表，有外鍵
+                hibernate機制，雙向維護外鍵，再一和多那一方都配置外鍵
+                column屬相值，外鍵值
+            -->
+            <key column="cid" ></key>
+            <!-- 客戶所有的聯繫人，class裡面寫聯繫人實體類全路徑 -->
+            <one-to-many class="com.jeff.entity.LinkMan" />
+        </set>
+    </class>
+</hibernate-mapping>

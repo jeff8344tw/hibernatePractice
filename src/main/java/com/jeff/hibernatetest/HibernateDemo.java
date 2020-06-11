@@ -1,12 +1,18 @@
 package com.jeff.hibernatetest;
 
+import com.jeff.entity.Customer;
+import com.jeff.entity.LinkMan;
 import com.jeff.entity.User;
 import com.jeff.utils.HibernateUtils;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
+import org.hibernate.query.Query;
 import org.junit.Test;
+
+import java.util.List;
+import java.util.Set;
 
 public class HibernateDemo {
 
@@ -220,6 +226,35 @@ public class HibernateDemo {
             // 獲取與本地線程綁定session，不需要手動關閉線程
 //            session.close() ;
         }
+    }
+
+    // 演示對象導航查詢
+    @Test
+    public void testSelect1(){
+        SessionFactory sessionFactory = null;
+        Session session = null;
+        Transaction tx = null;
+
+        try {
+            sessionFactory = HibernateUtils.getSessionFactory();
+            session = sessionFactory.openSession();
+            tx = session.beginTransaction();
+
+            // 查詢cid = 1的客戶，再查詢這個客戶裡所有的聯繫人
+            Customer customer = session.get(Customer.class, 1);
+            // 再查詢這個客戶裡面所有聯繫人
+            Set<LinkMan> linkMEN = customer.getSetLinkMan();
+
+            System.out.println(linkMEN.size());
+
+            tx.commit();
+        } catch (Exception ex){
+            ex.printStackTrace();
+            tx.rollback();
+        } finally {
+            session.close();
+        }
+
     }
 
 }

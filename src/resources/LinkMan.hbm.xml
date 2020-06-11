@@ -12,5 +12,12 @@
         <property name="lkn_name" column="lkn_name" />
         <property name="lkn_gender" column="lkn_gender" />
         <property name="lkn_phone" column="lkn_phone" />
+
+        <!-- 表示聯繫人所屬的客戶
+            name屬性，因為在聯繫人實體類使用customer對象
+            class屬性，customer全路徑
+            column屬性，外鍵名稱
+        -->
+        <many-to-one name="customer" class="com.jeff.entity.Customer" column="cid"></many-to-one>
     </class>
 </hibernate-mapping>

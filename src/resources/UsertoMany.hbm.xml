@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--引入約束-->
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EM"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+<!--
+1.配置類和表對應
+   class標籤
+   name屬性，實體類全路徑
+   table屬性，數據庫表名稱
+-->
+    <class name="com.jeff.manytomany.User2" table="t_user_many">
+        <!--
+        2.配置實體類id和表id對應
+            hibernate要求實體類有一個屬性唯一值
+            hibernate要求表有字段做為唯一值
+        -->
+
+        <!--
+            id標籤
+            name屬性，實體類裡面id屬性名稱
+            column屬性，生成的表字段名稱
+        -->
+        <id name="user_id" column="user_id">
+            <!--
+                設置數據庫表id增長策略
+                native:生成表id值就是主鍵自動增長
+            -->
+            <generator class="native"></generator>
+        </id>
+        <!--
+            配置其他屬性和表字段對應
+            name屬性，實體類屬性名稱
+            column屬性，生成的表字段名稱
+        -->
+        <property name="user_name" column="user_name" />
+        <property name="user_password" column="user_password" />
+        <!-- 在用戶裡面表示所有角色，使用set標籤
+            name屬性，角色set集合名稱
+            table屬性，第三章表名稱
+        -->
+        <set name="setRole" table="user_role" cascade="save-update,delete">
+            <!-- key標籤裡面配置
+                 配置當前映射文件在第三章表外鍵名稱
+             -->
+            <key column="userid"></key>
+            <!-- class，角色實體類全路徑
+                column，角色在第三張表外鍵名稱
+            -->
+            <many-to-many class="com.jeff.manytomany.Role" column="roleid" ></many-to-many>
+        </set>
+    </class>
+</hibernate-mapping>
